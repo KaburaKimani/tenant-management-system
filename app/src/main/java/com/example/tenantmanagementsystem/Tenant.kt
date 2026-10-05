@@ -10,3 +10,4 @@ data class Tenant(
         return "Tenant: $name\nPhone: $phone\nRent: KSh $rent"
     }
 }
+
