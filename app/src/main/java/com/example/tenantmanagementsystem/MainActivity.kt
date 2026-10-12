@@ -3,155 +3,127 @@ package com.example.tenantmanagementsystem
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tenantmanagementsystem.databinding.ActivityMainBinding
-
-/*
- * TENANT MANAGEMENT SYSTEM
- *
- * Group Members:
- * 1. Benjamin Kiuta - 189018
- * 2. Tracy Njeri - 189957
- * 3. Robert Irungu - 189669
- * 4. Christine Kanaiza - 169281
- * 5. Elizabeth Kabura - 189382
- * 6. Fore Amon - 169173
- */
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    // Stores the most recently saved tenant
+    // Stores the most recently saved tenant.
     private var lastTenant: Tenant? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onCreate")
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Receive the email sent from LoginActivity
-        val loginEmail = intent.getStringExtra("LOGIN_EMAIL")
+        // Restore the last saved tenant after configuration changes.
+        if (savedInstanceState != null) {
+            val name = savedInstanceState.getString("tenant_name")
+            val phone = savedInstanceState.getString("tenant_phone")
+            val rent = savedInstanceState.getString("tenant_rent")
 
-        if (loginEmail != null) {
-            Toast.makeText(
-                this,
-                "Logged in as $loginEmail",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (name != null && phone != null && rent != null) {
+                val tenant = Tenant(name, phone, rent)
+                lastTenant = tenant
+                binding.tenant = tenant
+            }
         }
 
-        // SAVE TENANT
+        // Save the tenant and display its summary.
         binding.saveButton.setOnClickListener {
-
             val name = binding.tenantNameEditText.text.toString().trim()
             val phone = binding.phoneEditText.text.toString().trim()
             val rent = binding.rentEditText.text.toString().trim()
 
-            // Validate tenant name
-            if (name.isEmpty()) {
-                binding.tenantNameEditText.error = "Required"
+            if (name.isEmpty() || phone.isEmpty() || rent.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Please fill in all tenant details",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
-            // Validate phone number
-            if (phone.isEmpty()) {
-                binding.phoneEditText.error = "Required"
-                return@setOnClickListener
-            }
-
-            // Validate rent
-            if (rent.isEmpty()) {
-                binding.rentEditText.error = "Required"
-                return@setOnClickListener
-            }
-
-            // Create Tenant object
-            val tenant = Tenant(
-                name = name,
-                phone = phone,
-                rent = rent
-            )
-
-            // Display tenant using Data Binding
+            val tenant = Tenant(name, phone, rent)
             binding.tenant = tenant
-
-            // Remember the most recently saved tenant
             lastTenant = tenant
-
-            Toast.makeText(
-                this,
-                "Tenant saved successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            // Clear input fields after saving
-            binding.tenantNameEditText.text.clear()
-            binding.phoneEditText.text.clear()
-            binding.rentEditText.text.clear()
+            TenantRepository.addTenant(tenant)
         }
 
-        // CALL TENANT
+        // Open the phone dialer with the saved tenant's number.
         binding.callButton.setOnClickListener {
-
             val tenant = lastTenant
 
             if (tenant == null) {
-
                 Toast.makeText(
                     this,
                     "Save a tenant first",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 return@setOnClickListener
             }
 
-            // Open the phone dialer using an implicit Intent
             val intent = Intent(
                 Intent.ACTION_DIAL,
                 Uri.parse("tel:${tenant.phone}")
             )
-
             startActivity(intent)
         }
+    }
 
-        // SHARE TENANT
-        binding.shareButton.setOnClickListener {
+    // Save the tenant's data before Android recreates the Activity.
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
-            val tenant = lastTenant
+        Log.d(
+            "TENANT_LIFECYCLE",
+            "MainActivity: onSaveInstanceState"
+        )
 
-            if (tenant == null) {
+        val tenant = lastTenant
 
-                Toast.makeText(
-                    this,
-                    "Save a tenant first",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                return@setOnClickListener
-            }
-
-            // Create an implicit share Intent
-            val intent = Intent(Intent.ACTION_SEND)
-
-            intent.type = "text/plain"
-
-            intent.putExtra(
-                Intent.EXTRA_TEXT,
-                tenant.summary()
-            )
-
-            // Display the Android sharing options
-            startActivity(
-                Intent.createChooser(
-                    intent,
-                    "Share tenant"
-                )
-            )
+        if (tenant != null) {
+            outState.putString("tenant_name", tenant.name)
+            outState.putString("tenant_phone", tenant.phone)
+            outState.putString("tenant_rent", tenant.rent)
         }
     }
-}
 
+    // Activity lifecycle logging for the practical.
+    override fun onStart() {
+        super.onStart()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onStop")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onRestart")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("TENANT_LIFECYCLE", "MainActivity: onDestroy")
+    }
+}
