@@ -1,5 +1,7 @@
 package com.example.tenantmanagementsystem
 
+import com.example.tenantmanagementsystem.data.model.Tenant
+
 /*
  * The Apartment class represents an apartment
  * that can contain multiple Tenant objects.

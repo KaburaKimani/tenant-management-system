@@ -1,4 +1,4 @@
-package com.example.tenantmanagementsystem
+package com.example.tenantmanagementsystem.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -51,7 +51,10 @@ class RegisterActivity : AppCompatActivity() {
             ).show()
 
             // Send registered email to LoginActivity
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = _root_ide_package_.android.content.Intent(
+                this,
+                LoginActivity::class.java
+            )
 
             intent.putExtra("EMAIL", email)
 
