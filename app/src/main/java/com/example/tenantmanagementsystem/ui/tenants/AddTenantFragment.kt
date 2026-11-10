@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.tenantmanagementsystem.data.model.Tenant
-import com.example.tenantmanagementsystem.data.repository.TenantRepository
 import com.example.tenantmanagementsystem.databinding.FragmentAddTenantBinding
+import com.example.tenantmanagementsystem.ui.viewmodel.TenantViewModel
 
 class AddTenantFragment : Fragment() {
 
     private var _binding: FragmentAddTenantBinding? = null
     private val binding get() = _binding!!
+
+    // 1. We connect to the shared ViewModel here
+    private val viewModel: TenantViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +44,9 @@ class AddTenantFragment : Fragment() {
             }
 
             val tenant = Tenant(name, phone, rent)
-            TenantRepository.addTenant(tenant)
+
+            // 2. We delegate the save action to the ViewModel instead of the Repository
+            viewModel.addTenant(tenant)
 
             // Generated from the <action> in nav_graph.xml; it REQUIRES a Tenant
             val action = AddTenantFragmentDirections

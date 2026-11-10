@@ -7,14 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
-import com.example.tenantmanagementsystem.data.repository.TenantRepository
 import com.example.tenantmanagementsystem.databinding.FragmentViewTenantsBinding
+import com.example.tenantmanagementsystem.ui.viewmodel.TenantViewModel
 
 class ViewTenantsFragment : Fragment() {
 
     private var _binding: FragmentViewTenantsBinding? = null
     private val binding get() = _binding!!
+
+    // 1. Connect to the shared ViewModel
+    private val viewModel: TenantViewModel by activityViewModels()
 
     // Safe Args: reads the arguments sent with the action
     private val args: ViewTenantsFragmentArgs by navArgs()
@@ -50,12 +54,13 @@ class ViewTenantsFragment : Fragment() {
             }
         }
 
-        // Show every saved tenant
-        val tenants = TenantRepository.tenants
-        if (tenants.isEmpty()) {
-            binding.allTenantsTextView.text = "No tenants yet. Add one from the Dashboard."
-        } else {
-            binding.allTenantsTextView.text = tenants.joinToString("\n\n") { it.summary() }
+        // 2. Observe LiveData from the ViewModel instead of querying the Repository directly
+        viewModel.tenantsList.observe(viewLifecycleOwner) { tenants ->
+            if (tenants.isNullOrEmpty()) {
+                binding.allTenantsTextView.text = "No tenants yet. Add one from the Dashboard."
+            } else {
+                binding.allTenantsTextView.text = tenants.joinToString("\n\n") { it.summary() }
+            }
         }
     }
 
