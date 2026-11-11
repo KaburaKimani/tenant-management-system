@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.tenantmanagementsystem.data.repository.TenantRepository
 import com.example.tenantmanagementsystem.databinding.FragmentDashboardBinding
+import com.example.tenantmanagementsystem.ui.viewmodel.TenantViewModel
 
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+
+    // 1. Added the ViewModel connection here
+    private val viewModel: TenantViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +31,11 @@ class DashboardFragment : Fragment() {
     ): View {
         Log.d("TENANT_LIFECYCLE", "   DashboardFragment: onCreateView")
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+
+        // 2. Connect the Data Binding to the ViewModel and Lifecycle
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         return binding.root
     }
 
@@ -34,11 +43,8 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("TENANT_LIFECYCLE", "   DashboardFragment: onViewCreated")
 
-        val tenantCount = TenantRepository.tenants.size
-        val totalRent = TenantRepository.totalRent()
-
-        binding.tenantCountTextView.text = "Tenants\n$tenantCount"
-        binding.totalRentTextView.text = "Total rent\nKSh %,.0f".format(totalRent)
+        // We removed the old TenantRepository calls here because Data Binding
+        // in the XML will now handle updating the UI automatically!
 
         // Safe Args: this function is generated from the <action> in nav_graph.xml
         binding.addTenantButton.setOnClickListener {
