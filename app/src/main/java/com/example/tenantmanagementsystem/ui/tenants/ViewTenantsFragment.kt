@@ -55,7 +55,7 @@ class ViewTenantsFragment : Fragment() {
         }
 
         // 2. Observe LiveData from the ViewModel instead of querying the Repository directly
-        viewModel.tenantsList.observe(viewLifecycleOwner) { tenants ->
+        viewModel.tenants.observe(viewLifecycleOwner) { tenants ->
             if (tenants.isNullOrEmpty()) {
                 binding.allTenantsTextView.text = "No tenants yet. Add one from the Dashboard."
             } else {
