@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.tenantmanagementsystem.data.model.Tenant
 import com.example.tenantmanagementsystem.databinding.FragmentAddTenantBinding
@@ -17,8 +19,15 @@ class AddTenantFragment : Fragment() {
     private var _binding: FragmentAddTenantBinding? = null
     private val binding get() = _binding!!
 
-    // 1. We connect to the shared ViewModel here
-    private val viewModel: TenantViewModel by activityViewModels()
+    // 1. Connect to the ViewModel AND provide the Factory for AndroidViewModel
+    private val viewModel: TenantViewModel by activityViewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return TenantViewModel(requireActivity().application) as T
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,22 +42,23 @@ class AddTenantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.saveButton.setOnClickListener {
+            // 2. Read the user input (using Member 4's correct XML IDs)
             val name = binding.tenantNameEditText.text.toString().trim()
             val phone = binding.phoneEditText.text.toString().trim()
             val rent = binding.rentEditText.text.toString().trim()
 
             if (name.isEmpty() || phone.isEmpty() || rent.isEmpty()) {
-                // A Fragment is not a Context, so use requireContext()
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // 3. Create the Tenant object
             val tenant = Tenant(name, phone, rent)
 
-            // 2. We delegate the save action to the ViewModel instead of the Repository
+            // 4. Send it to the ViewModel (Stage 5 Integration)
             viewModel.addTenant(tenant)
 
-            // Generated from the <action> in nav_graph.xml; it REQUIRES a Tenant
+            // 5. Navigate to the next screen
             val action = AddTenantFragmentDirections
                 .actionAddTenantFragmentToViewTenantsFragment(tenant)
             findNavController().navigate(action)
