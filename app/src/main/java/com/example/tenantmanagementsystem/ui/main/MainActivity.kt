@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,61 +25,136 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    companion object {
+        private const val PREFS_NAME = "app_settings"
+        private const val KEY_DARK_MODE = "dark_mode"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Restore the saved theme before creating the activity.
+        val preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val isDarkMode = preferences.getBoolean(KEY_DARK_MODE, false)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
+
         super.onCreate(savedInstanceState)
+
         Log.d("TENANT_LIFECYCLE", "MainActivity: onCreate")
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Use our Toolbar as the App Bar
         setSupportActionBar(binding.toolbar)
 
-        // 2. Get the NavController from the NavHost
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
         navController = navHostFragment.navController
 
-        // 3. Top-level destinations + the drawer
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.dashboardFragment, R.id.addTenantFragment, R.id.viewTenantsFragment),
+            setOf(
+                R.id.dashboardFragment,
+                R.id.addTenantFragment,
+                R.id.viewTenantsFragment
+            ),
             binding.drawerLayout
         )
 
-        // 4. Connect the App Bar and the drawer to navigation
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        // 5. Show the user's email in the drawer header.
-        // YOUR LoginActivity uses the key "LOGIN_EMAIL" (not "EMAIL")
+        // Display the user's email in the navigation drawer.
         val email = intent.getStringExtra("LOGIN_EMAIL")
-        val headerBinding = NavHeaderBinding.bind(binding.navView.getHeaderView(0))
+        val headerBinding = NavHeaderBinding.bind(
+            binding.navView.getHeaderView(0)
+        )
         headerBinding.headerEmailTextView.text = email ?: "Signed in"
     }
 
-    // ☰ opens the drawer; ← goes back
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) ||
+                super.onSupportNavigateUp()
     }
 
-    // Turn main_menu.xml into menu items in the App Bar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        val isDarkMode = getSharedPreferences(
+            PREFS_NAME,
+            MODE_PRIVATE
+        ).getBoolean(KEY_DARK_MODE, false)
+
+        menu.findItem(R.id.action_theme)?.title =
+            if (isDarkMode) {
+                "Switch to Light Mode"
+            } else {
+                "Switch to Dark Mode"
+            }
+
         return true
     }
 
-    // What happens when a menu item is tapped
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_logout) {
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            return true
+
+        when (item.itemId) {
+
+            R.id.action_theme -> {
+
+                val preferences = getSharedPreferences(
+                    PREFS_NAME,
+                    MODE_PRIVATE
+                )
+
+                val currentMode = preferences.getBoolean(
+                    KEY_DARK_MODE,
+                    false
+                )
+
+                val newMode = !currentMode
+
+                // Save the user's selection.
+                preferences.edit()
+                    .putBoolean(KEY_DARK_MODE, newMode)
+                    .apply()
+
+                // Apply the selected theme.
+                AppCompatDelegate.setDefaultNightMode(
+                    if (newMode) {
+                        AppCompatDelegate.MODE_NIGHT_YES
+                    } else {
+                        AppCompatDelegate.MODE_NIGHT_NO
+                    }
+                )
+
+                return true
+            }
+
+            R.id.action_logout -> {
+
+                val intent = Intent(this, LoginActivity::class.java)
+
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intent)
+
+                return true
+            }
         }
-        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+
+        return item.onNavDestinationSelected(navController) ||
+                super.onOptionsItemSelected(item)
     }
 
-    // ── LIFECYCLE LOGS (kept from Practical 2) ──
+    // Lifecycle logs
     override fun onStart() {
         super.onStart()
         Log.d("TENANT_LIFECYCLE", "MainActivity: onStart")

@@ -1,7 +1,31 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Tenantmanagementsystem" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Base.Theme.Tenantmanagementsystem"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/navy</item>
+        <item name="colorOnPrimary">@color/text_on_navy</item>
+        <item name="colorSecondary">@color/blue_accent</item>
+        <item name="colorOnSecondary">@color/text_on_navy</item>
+
+        <item name="colorSurface">@color/surface_white</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/light_blue</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:colorAccent">@color/blue_accent</item>
+
+        <item name="android:windowBackground">@color/screen_background</item>
+        <item name="android:statusBarColor">#0B1525</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="android:navigationBarColor">#172B4D</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
+
+    <style name="Theme.Tenantmanagementsystem"
+        parent="Base.Theme.Tenantmanagementsystem" />
 </resources>

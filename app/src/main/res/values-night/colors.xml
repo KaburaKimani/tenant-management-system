@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy">#B7CBE8</color>
+    <color name="navy_dark">#D5E2F4</color>
+    <color name="navy_medium">#A6BEDD</color>
+    <color name="blue_accent">#A6C4EF</color>
+
+    <color name="screen_background">#101A2B</color>
+    <color name="surface_white">#1B2A40</color>
+    <color name="light_blue">#263750</color>
+
+    <color name="text_primary">#F1F4F9</color>
+    <color name="text_secondary">#D2DCEC</color>
+    <color name="text_hint">#B0BED1</color>
+    <color name="text_on_navy">#10213D</color>
+
+    <color name="toolbar_background">#10213D</color>
+    <color name="button_background">#172B4D</color>
+    <color name="button_text">#FFFFFF</color>
+
+    <color name="border_color">#43546D</color>
+    <color name="success_green">#83D6A8</color>
+    <color name="error_red">#FFB4AB</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

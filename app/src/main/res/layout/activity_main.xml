@@ -5,9 +5,9 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/screen_background">
 
-    <!-- 1. The normal screen: App Bar + NavHost (must be FIRST child) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,9 +17,12 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorSurfaceVariant" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/toolbar_background"
+            android:elevation="4dp"
+            app:titleTextColor="@color/button_text"
+            app:navigationIconTint="@color/button_text"
+            app:subtitleTextColor="@color/text_secondary" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
@@ -29,16 +32,20 @@
             android:layout_weight="1"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
+
     </LinearLayout>
 
-    <!-- 2. The drawer (must be LAST child) -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="@color/surface_white"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        app:itemIconTint="@color/navy"
+        app:itemTextColor="@color/text_primary"
+        app:itemBackground="@color/surface_white" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

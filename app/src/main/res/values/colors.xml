@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="navy">#172B4D</color>
+    <color name="navy_dark">#10213D</color>
+    <color name="navy_medium">#29466D</color>
+    <color name="blue_accent">#5276A5</color>
+
+    <color name="screen_background">#F4F6FA</color>
+    <color name="surface_white">#FFFFFF</color>
+    <color name="light_blue">#E8EEF6</color>
+
+    <color name="text_primary">#17243A</color>
+    <color name="text_secondary">#46556B</color>
+    <color name="text_hint">#68778C</color>
+    <color name="text_on_navy">#FFFFFF</color>
+
+    <color name="toolbar_background">#10213D</color>
+    <color name="button_background">#172B4D</color>
+    <color name="button_text">#FFFFFF</color>
+
+    <color name="border_color">#C8D2E0</color>
+    <color name="success_green">#237A50</color>
+    <color name="error_red">#B3261E</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>
